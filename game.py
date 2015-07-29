@@ -1,13 +1,12 @@
 import pygame, random, sys, math, decimal
 from pygame.locals import *
 from boid import Boid
+from vec2d import Vec2d
 pygame.init()
 
-FPS = 1000
+FPS = 10
 DKGREY = (50,50,50)
-MAX_VELOCITY = 10
-NUM_BOIDS = 50
-MAX_VELOCITY = 100
+NUM_BOIDS = 1
 SCREENHEIGHT = 800
 SCREENWIDTH  = 600
 
@@ -18,9 +17,11 @@ class Game():
         self.fpsClock = pygame.time.Clock()
         self.fps = FPS
         self.boids = []
-        self.maxVelocity = MAX_VELOCITY
 
-        self.sprite = pygame.image.load("boid.png")
+        self.target = Vec2d(random.randint(1, SCREENWIDTH), random.randint(1, SCREENHEIGHT))
+        print 'target %s' % self.target
+
+        self.sprite = pygame.image.load("sprite.png")
         self.spriteRect = self.sprite.get_rect()
 
     def start(self):
@@ -56,22 +57,24 @@ class Game():
 
                 self.updateBoid(boid, closeBoids)
 
+            self.drawTarget()
+
             pygame.display.flip()
             self.fpsClock.tick(self.fps)
 
     def updateBoid(self, boid, closeBoids):
 
-        boid.moveAway(closeBoids, 20)
+        # boid.moveAway(closeBoids, DISTANCE)
 
-        border = 25
-        if boid.x < border and boid.vector.x < 0:
-            boid.vector.x = -boid.vector.x * random.random()
-        if boid.x > self.SCREENWIDTH - border and boid.vector.x > 0:
-            boid.vector.x = -boid.vector.x * random.random()
-        if boid.y < border and boid.vector.y < 0:
-            boid.vector.y = -boid.vector.y * random.random()
-        if boid.y > self.SCREENHEIGHT - border and boid.vector.y > 0:
-            boid.vector.y = -boid.vector.y * random.random()
+        # border = 25
+        # if boid.x < border and boid.vector.x < 0:
+        #     boid.vector.x = -boid.vector.x * random.random()
+        # if boid.x > self.SCREENWIDTH - border and boid.vector.x > 0:
+        #     boid.vector.x = -boid.vector.x * random.random()
+        # if boid.y < border and boid.vector.y < 0:
+        #     boid.vector.y = -boid.vector.y * random.random()
+        # if boid.y > self.SCREENHEIGHT - border and boid.vector.y > 0:
+        #     boid.vector.y = -boid.vector.y * random.random()
 
         boid.move()
 
@@ -79,10 +82,15 @@ class Game():
         self.surface.fill(DKGREY)
         for boid in self.boids:
             boidRect = pygame.Rect(self.spriteRect)
-            boidRect.x = boid.x
-            boidRect.y = boid.y
-            sprite = pygame.transform.rotate(self.sprite, (-boid.vector.get_angle()) + 90)
+            print 'Position %s' % boid.position
+            boidRect.x = boid.position.x
+            boidRect.y = boid.position.y
+            sprite = pygame.transform.rotate(self.sprite, (-boid.velocity.get_angle()) + 90)
             self.surface.blit(sprite, boidRect)
+
+    def drawTarget(self):
+
+        pygame.draw.circle(self.surface, (255, 0, 0), (self.target.x, self.target.y), 10, 1)
 
 
 def main():
