@@ -1,13 +1,16 @@
 import math, random
 
-class Boid
+from vec2d import Vec2d
+
+class Boid:
 
     def __init__(self, game, x, y):
         self.game = game
         self.x = x
         self.y = y
-        self.velocityX = randon.randint(1, 10) / 10.0
-        self.velocityY = randon.randint(1, 10) / 10.0
+        velocityX = random.randint(1, 10) / 10.0
+        velocityY = random.randint(1, 10) / 10.0
+        self.vector = Vec2d(velocityX, velocityY)
 
     def moveAway(self, boids, minDistance):
         if len(boids) < 1: return
@@ -23,28 +26,34 @@ class Boid
                 xDiff = (self.x - boid.x)
                 yDiff = (self.y - boid.y)
 
-                if xdiff >= 0:
-                    xdiff = math.sqrt(minDistance) - xdiff
-                elif xdiff < 0:
-                    xdiff = -math.sqrt(minDistance) - xdiff
+                if xDiff >= 0:
+                    xDiff = math.sqrt(minDistance) - xDiff
+                elif xDiff < 0:
+                    xDiff = -math.sqrt(minDistance) - xDiff
 
                 distanceX += xDiff
                 distanceY += yDiff
 
-            if numClose === 0:
+            if numClose == 0:
                 return
 
-            self.velocityX -= distanceX / 5
-            self.velocityY -= distanceY / 5
+            self.vector.x -= distanceX / 5
+            self.vector.y -= distanceY / 5
 
     def move(self):
-        if abs(self.velocityX) > self.game.maxVelocity or abs(self.velocityY) > maxVelocity:
-            scaleFactory = maxVelocity / max(abs(self.velocityX), abs(self.velocityY))
-            self.velocityX *= scaleFactor
-            self.velocityY *= scaleFactor
+        if abs(self.vector.x) > self.game.maxVelocity or abs(self.vector.y) > self.game.maxVelocity:
+            scaleFactor = self.game.maxVelocity / max(abs(self.vector.x), abs(self.vector.y))
+            self.vector.x *= scaleFactor
+            self.vector.y *= scaleFactor
 
-        self.x += self.velocityX
-        self.y += self.velocityY
+        self.x += self.vector.x
+        self.y += self.vector.y
+
+    def distance(self, boid):
+        distX = self.x - boid.x
+        distY = self.y - boid.y
+        return math.sqrt(distX * distX + distY * distY)
+
 
 
 
