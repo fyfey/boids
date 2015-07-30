@@ -1,7 +1,9 @@
+import random
 from vec2d import Vec2d
 
 class Boid:
-    MAX_FORCE    = 2.4
+    MAX_FORCE    = 1.2
+    MAX_SPEED    = 2
     MAX_VELOCITY = 3
 
     def __init__(self, x, y, target, totalMass = 20):
@@ -11,15 +13,29 @@ class Boid:
         self.steering = Vec2d(0, 0)
         self.target   = target
         self.mass     = totalMass
+        self.state    = 'seek'
+        self.states   = ['seek', 'flee']
 
         self.truncate(self.velocity, self.MAX_VELOCITY)
+
+    def randomState(self):
+        self.state = random.choice(self.states);
 
     def seek(self, target):
         desired = target - self.position
         desired = desired.normalized()
         desired *= self.MAX_VELOCITY
+        desired -= self.velocity
 
-        return desired - self.velocity
+        return desired
+
+    def flee(self, target):
+        desired = self.position - target
+        desired = desired.normalized()
+        desired *= self.MAX_VELOCITY
+        desired -= self.velocity
+
+        return desired
 
     def truncate(self, vector, max):
         i = max / vector.get_length()
@@ -28,15 +44,15 @@ class Boid:
         vector *= i
 
     def update(self):
-        # steering = self.seek(self.target)
+        if self.state == 'seek':
+            self.steering = self.seek(self.target)
+        if self.state == 'flee':
+            self.steering = self.flee(self.target)
 
-        # self.truncate(steering, self.MAX_FORCE)
-        # steering *= (1 / self.mass)
+        self.truncate(self.steering, self.MAX_FORCE)
+        self.steering /= self.mass
 
-        # self.velocity += steering
-        # self.truncate(self.velocity, self.MAX_VELOCITY)
-
-        self.velocity = (self.target - self.position).normalized() * self.MAX_VELOCITY
-
-        self.position += self.velocity
+        self.velocity = self.velocity + self.steering
+        self.truncate(self.velocity, self.MAX_SPEED)
+        self.position = self.position + self.velocity
 

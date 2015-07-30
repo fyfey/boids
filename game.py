@@ -17,10 +17,7 @@ class Game():
         self.fpsClock = pygame.time.Clock()
         self.fps = FPS
         self.boids = []
-        self.target = Vec2d(240, 200)
-
         self.target = Vec2d(random.randint(1, SCREENWIDTH), random.randint(1, SCREENHEIGHT))
-        print 'target %s' % self.target
 
         self.sprite = pygame.image.load("sprite.png")
         self.spriteRect = self.sprite.get_rect()
@@ -38,16 +35,18 @@ class Game():
 
         while True:
             for event in pygame.event.get(QUIT): # get all the QUIT events
-                print 'quit'
                 pygame.quit()
                 sys.exit()
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONUP:
-                    print "MOUSE CLICK"
                     (self.target.x, self.target.y) = pygame.mouse.get_pos()
-                    pass
                 if event.type == pygame.KEYUP:
-                    pass
+                    if event.key == K_1:
+                        for boid in self.boids:
+                            boid.state = "seek"
+                    if event.key == K_2:
+                        for boid in self.boids:
+                            boid.state = "flee"
 
             for boid in self.boids:
                 # closeBoids = []
@@ -87,8 +86,7 @@ class Game():
             sprite, rect = self.rot_center(self.sprite, boidRect, (-boid.velocity.get_angle()) + 90)
             self.surface.blit(sprite, rect)
 
-            pygame.draw.circle(self.surface, (0, 255, 255), (int(boid.position.x), int(boid.position.y)), 1, 1)
-            pygame.draw.circle(self.surface, (255, 0, 0), boid.target, 5, 1)
+            pygame.draw.circle(self.surface, (255, 0, 0), boid.target, 5)
 
     def rot_center(self, image, rect, angle):
         rot_image = pygame.transform.rotate(image, angle)
