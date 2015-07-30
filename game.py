@@ -4,7 +4,7 @@ from boid import Boid
 from vec2d import Vec2d
 pygame.init()
 
-FPS = 10
+FPS = 30
 DKGREY = (50,50,50)
 NUM_BOIDS = 1
 SCREENHEIGHT = 800
@@ -17,6 +17,7 @@ class Game():
         self.fpsClock = pygame.time.Clock()
         self.fps = FPS
         self.boids = []
+        self.target = Vec2d(240, 200)
 
         self.target = Vec2d(random.randint(1, SCREENWIDTH), random.randint(1, SCREENHEIGHT))
         print 'target %s' % self.target
@@ -33,7 +34,7 @@ class Game():
         self.surface.fill(DKGREY)
 
         for i in range(NUM_BOIDS):
-            self.boids.append(Boid(self, random.randint(0, self.SCREENWIDTH), random.randint(0, self.SCREENHEIGHT)))
+            self.boids.append(Boid(random.randint(0, self.SCREENWIDTH), random.randint(0, self.SCREENHEIGHT), self.target))
 
         while True:
             for event in pygame.event.get(QUIT): # get all the QUIT events
@@ -42,27 +43,27 @@ class Game():
                 sys.exit()
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONUP:
+                    print "MOUSE CLICK"
+                    (self.target.x, self.target.y) = pygame.mouse.get_pos()
                     pass
                 if event.type == pygame.KEYUP:
                     pass
 
             for boid in self.boids:
-                closeBoids = []
-                for otherBoid in self.boids:
-                    if otherBoid == boid:
-                        continue
-                    distance = boid.distance(otherBoid)
-                    if distance < 200:
-                        closeBoids.append(otherBoid)
+                # closeBoids = []
+                # for otherBoid in self.boids:
+                #     if otherBoid == boid:
+                #         continue
+                #     distance = boid.distance(otherBoid)
+                #     if distance < 200:
+                #         closeBoids.append(otherBoid)
 
-                self.updateBoid(boid, closeBoids)
-
-            self.drawTarget()
+                self.updateBoid(boid)
 
             pygame.display.flip()
             self.fpsClock.tick(self.fps)
 
-    def updateBoid(self, boid, closeBoids):
+    def updateBoid(self, boid):
 
         # boid.moveAway(closeBoids, DISTANCE)
 
@@ -76,21 +77,24 @@ class Game():
         # if boid.y > self.SCREENHEIGHT - border and boid.vector.y > 0:
         #     boid.vector.y = -boid.vector.y * random.random()
 
-        boid.move()
+        boid.update()
 
         " Draw boids "
         self.surface.fill(DKGREY)
         for boid in self.boids:
             boidRect = pygame.Rect(self.spriteRect)
-            print 'Position %s' % boid.position
-            boidRect.x = boid.position.x
-            boidRect.y = boid.position.y
-            sprite = pygame.transform.rotate(self.sprite, (-boid.velocity.get_angle()) + 90)
-            self.surface.blit(sprite, boidRect)
+            boidRect.center = boid.position;
+            sprite, rect = self.rot_center(self.sprite, boidRect, (-boid.velocity.get_angle()) + 90)
+            self.surface.blit(sprite, rect)
 
-    def drawTarget(self):
+            pygame.draw.circle(self.surface, (0, 255, 255), (int(boid.position.x), int(boid.position.y)), 1, 1)
+            pygame.draw.circle(self.surface, (255, 0, 0), boid.target, 5, 1)
 
-        pygame.draw.circle(self.surface, (255, 0, 0), (self.target.x, self.target.y), 10, 1)
+    def rot_center(self, image, rect, angle):
+        rot_image = pygame.transform.rotate(image, angle)
+        rot_rect = rot_image.get_rect(center=rect.center)
+        return rot_image, rot_rect
+
 
 
 def main():
