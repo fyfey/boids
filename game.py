@@ -86,13 +86,32 @@ class Game():
             sprite, rect = self.rot_center(self.sprite, boidRect, (-boid.velocity.get_angle()) + 90)
             self.surface.blit(sprite, rect)
 
-            pygame.draw.circle(self.surface, (255, 0, 0), boid.target, 5)
+            self.drawForces(boid)
+
+            pygame.draw.circle(self.surface, (255, 0, 0), boid.target, 5, 1)
 
     def rot_center(self, image, rect, angle):
         rot_image = pygame.transform.rotate(image, angle)
         rot_rect = rot_image.get_rect(center=rect.center)
         return rot_image, rot_rect
 
+    def drawForces(self, boid):
+        velocity = Vec2d(boid.velocity)
+        desired  = Vec2d(boid.desired)
+        steering = Vec2d(boid.steering)
+
+        velocity.normalized();
+        desired.normalized();
+        steering.normalized();
+
+        self.drawForceVector(boid, velocity, (0, 255, 0))
+        self.drawForceVector(boid, desired, (0, 0, 255))
+        self.drawForceVector(boid, steering, (255, 0, 0))
+
+    def drawForceVector(self, boid, vector, color):
+        scale = 100
+        pygame.draw.line(self.surface, color, (boid.position.x + 10 / 2, boid.position.y + 25 / 2), (boid.position.x + vector.x * scale, boid.position.y + vector.y * scale))
+        pygame
 
 
 def main():
