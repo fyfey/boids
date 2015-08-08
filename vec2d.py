@@ -134,6 +134,16 @@ class Vec2d(object):
             self.x -= other
             self.y -= other
         return self
+
+    def truncate(self, max):
+
+        i = max / self.get_length()
+        i = i if i < 1.0 else 1.0
+
+        vector = Vec2d(self)
+        vector *= i
+
+        return vector
  
     # Multiplication
     def __mul__(self, other):

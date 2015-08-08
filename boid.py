@@ -1,58 +1,48 @@
 import random
 from vec2d import Vec2d
 
+MASS           = 20
+MAX_FORCE      = 2
+MAX_SPEED      = 3
+SLOWING_RADIUS = 150
+
 class Boid:
-    MAX_FORCE    = 1.2
-    MAX_SPEED    = 2
-    MAX_VELOCITY = 3
 
     def __init__(self, x, y, target, totalMass = 20):
         self.position = Vec2d(x, y)
         self.velocity = Vec2d(-1, -2)
+
         self.desired  = Vec2d(0, 0)
         self.steering = Vec2d(0, 0)
         self.target   = target
-        self.mass     = totalMass
-        self.state    = 'seek'
-        self.states   = ['seek', 'flee']
 
-        self.truncate(self.velocity, self.MAX_VELOCITY)
-
-    def randomState(self):
-        self.state = random.choice(self.states);
+        self.velocity = self.velocity.truncate(MAX_SPEED)
 
     def seek(self, target):
-        desired = target - self.position
-        desired = desired.normalized()
-        desired *= self.MAX_VELOCITY
-        desired -= self.velocity
 
-        return desired
+        target_offset = target - self.position
+        distance = target_offset.get_length()
+
+        if distance <= SLOWING_RADIUS:
+            ramped_speed = MAX_SPEED * (distance / SLOWING_RADIUS)
+            # clipped_speed = min([ramped_speed, MAX_SPEED])
+            desired = (target_offset).normalized() * ramped_speed
+        else:
+            desired = (target_offset).normalized() * MAX_SPEED
+
+        return desired - self.velocity
 
     def flee(self, target):
-        desired = self.position - target
-        desired = desired.normalized()
-        desired *= self.MAX_VELOCITY
-        desired -= self.velocity
+        desired = (self.position - target).normalized() * MAX_SPEED
 
-        return desired
-
-    def truncate(self, vector, max):
-        i = max / vector.get_length()
-        i = 1.0 if i < 1.0 else i
-
-        vector *= i
+        return desired - self.velocity
 
     def update(self):
-        if self.state == 'seek':
-            self.steering = self.seek(self.target)
-        if self.state == 'flee':
-            self.steering = self.flee(self.target)
+        self.steering = self.seek(self.target)
 
-        self.truncate(self.steering, self.MAX_FORCE)
-        self.steering /= self.mass
+        steering_force = self.steering.truncate(MAX_FORCE)
+        acceleration = steering_force / MASS
 
-        self.velocity = self.velocity + self.steering
-        self.truncate(self.velocity, self.MAX_SPEED)
+        self.velocity = (self.velocity + acceleration).truncate(MAX_SPEED)
         self.position = self.position + self.velocity
 
