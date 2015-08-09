@@ -23,12 +23,9 @@ class Boid:
         target_offset = target - self.position
         distance = target_offset.get_length()
 
-        if distance <= SLOWING_RADIUS:
-            ramped_speed = MAX_SPEED * (distance / SLOWING_RADIUS)
-            # clipped_speed = min([ramped_speed, MAX_SPEED])
-            desired = (target_offset).normalized() * ramped_speed
-        else:
-            desired = (target_offset).normalized() * MAX_SPEED
+        ramped_speed = MAX_SPEED * (distance / SLOWING_RADIUS)
+        clipped_speed = min([ramped_speed, MAX_SPEED])
+        desired = (clipped_speed / distance) * target_offset
 
         return desired - self.velocity
 
