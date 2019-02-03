@@ -104,14 +104,22 @@ class Game():
         desired.normalized();
         steering.normalized();
 
-        self.drawForceVector(boid, velocity, (0, 255, 0))
-        self.drawForceVector(boid, desired, (0, 0, 255))
-        self.drawForceVector(boid, steering, (255, 0, 0))
+        self.drawForceVector(boid, velocity, (0, 255, 0), (100, 100))
+        self.drawForceVector(boid, desired, (0, 0, 255), (100, 150))
+        self.drawForceVector(boid, steering, (255, 0, 0), (100, 200))
 
-    def drawForceVector(self, boid, vector, color):
+    def drawForceVector(self, boid, vector, color, pos):
         scale = 100
-        pygame.draw.line(self.surface, color, (boid.position.x + 10 / 2, boid.position.y + 25 / 2), (boid.position.x + vector.x * scale, boid.position.y + vector.y * scale))
-        pygame
+        pygame.draw.line(
+            self.surface, 
+            color,
+            (boid.position.x + 10 / 2, boid.position.y + 25 / 2),
+            (boid.position.x + vector.x * scale, boid.position.y + vector.y * scale)
+        )
+
+        myfont = pygame.font.SysFont("monospace", 15)
+        label = myfont.render("%f, %f" % (vector.x, vector.y), 1, color)
+        self.surface.blit(label, pos)
 
 
 def main():
