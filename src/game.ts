@@ -1,15 +1,17 @@
 import { Display } from "./display.js";
 
-export type GameCallback = (display: Display, dt: number, fps: number) => void;
+export type RenderCallback = (display: Display, dt: number, t: number) => void;
+export type UpdateCallback = (dt: number, t: number) => void;
 
 export class Game {
   readonly canvas: HTMLCanvasElement;
   readonly ctx: CanvasRenderingContext2D;
   readonly display: Display;
+  drawForces = false;
   running = false;
   lastTime = 0;
-  private update: GameCallback = () => {};
-  private render: GameCallback = () => {};
+  private update: UpdateCallback = () => {};
+  private render: RenderCallback = () => {};
 
   constructor(
     public width: number,
@@ -22,7 +24,7 @@ export class Game {
       throw new Error("Container not found");
     }
 
-    this.canvas = document.createElement('canvas') as HTMLCanvasElement;
+    this.canvas = document.createElement("canvas") as HTMLCanvasElement;
     this.canvas.width = width;
     this.canvas.height = height;
 
@@ -33,14 +35,13 @@ export class Game {
     }
     this.ctx = ctx;
     this.display = new Display(this.ctx, this);
-
   }
 
-  onUpdate(cb: GameCallback) {
+  onUpdate(cb: UpdateCallback) {
     this.update = cb;
   }
 
-  onRender(cb: GameCallback) {
+  onRender(cb: RenderCallback) {
     this.render = cb;
   }
 
@@ -57,10 +58,11 @@ export class Game {
     let dt = ts - this.lastTime;
     let fps = 1000 / dt;
 
-    this.update(this.display, dt, fps);
-    this.lastTime = ts;
     this.display.clear();
-    this.render(this.display, dt, fps);
+    this.update(dt, ts);
+    this.lastTime = ts;
+    this.display.drawText(`FPS: ${fps.toLocaleString()}`, 10, 16, "#fff");
+    this.render(this.display, dt, ts);
     this.display.render();
 
     requestAnimationFrame(this._run.bind(this));

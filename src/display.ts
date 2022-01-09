@@ -1,3 +1,4 @@
+import { TWO_PI } from "./config.js";
 import { Game } from "./game.js";
 
 export class Display {
@@ -24,7 +25,6 @@ export class Display {
 
   clear() {
     this.buffer.fillStyle = this.game.bgColor;
-    console.log(this.game.width, this.game.height);
     this.buffer.fillRect(0, 0, this.game.width, this.game.height);
   }
 
@@ -58,7 +58,34 @@ export class Display {
       this.buffer.strokeStyle = strokeStyle;
     }
     this.buffer.beginPath();
-    this.buffer.arc(x, y, radius, 0, 2 * Math.PI);
+    this.buffer.arc(x, y, radius, 0, TWO_PI);
+    if (strokeStyle) {
+      this.buffer.stroke();
+    }
+    if (fillStyle) {
+      this.buffer.fill();
+    }
+    this.buffer.restore();
+  }
+
+  drawEllipse(
+    x: number,
+    y: number,
+    radiusX: number,
+    radiusY: number,
+    rotation: number,
+    fillStyle: string | null,
+    strokeStyle: string | null
+  ) {
+    this.buffer.save();
+    if (fillStyle) {
+      this.buffer.fillStyle = fillStyle;
+    }
+    if (strokeStyle) {
+      this.buffer.strokeStyle = strokeStyle;
+    }
+    this.buffer.beginPath();
+    this.buffer.ellipse(x, y, radiusX, radiusY, rotation, 0, TWO_PI);
     if (strokeStyle) {
       this.buffer.stroke();
     }

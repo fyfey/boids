@@ -1,3 +1,5 @@
+import { TWO_PI } from "./config.js";
+
 export class Vector2 {
   constructor(public x = 0, public y = 0) {
     this.x = x;
@@ -279,6 +281,14 @@ export class Vector2 {
     return this.divideScalar(this.length() || 1);
   }
 
+  random(): Vector2 {
+    let angle = Math.random() * TWO_PI;
+    let length = 1;
+    this.x = length * Math.cos(angle);
+    this.y = length * Math.sin(angle);
+    return this;
+  }
+
   angle() {
     // computes the angle in radians with respect to the positive x-axis
 
@@ -367,13 +377,6 @@ export class Vector2 {
 
     this.x = x * c - y * s + center.x;
     this.y = x * s + y * c + center.y;
-
-    return this;
-  }
-
-  random() {
-    this.x = Math.random();
-    this.y = Math.random();
 
     return this;
   }
