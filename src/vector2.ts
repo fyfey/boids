@@ -185,16 +185,12 @@ export class Vector2 {
   }
 
   maxScalar(v: number) {
-    this.x = Math.max(this.x, v);
-    this.y = Math.max(this.y, v);
-
+    this.setLength(Math.max(this.length(), v));
     return this;
   }
 
   minScalar(v: number) {
-    this.x = Math.min(this.x, v);
-    this.y = Math.min(this.y, v);
-
+    this.setLength(Math.min(this.length(), v));
     return this;
   }
 

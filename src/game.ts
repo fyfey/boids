@@ -1,4 +1,7 @@
+import { Boid } from "./boid.js";
 import { Display } from "./display.js";
+import { Food } from "./food.js";
+import { Vector2 } from "./vector2.js";
 
 export type RenderCallback = (display: Display, dt: number, t: number) => void;
 export type UpdateCallback = (dt: number, t: number) => void;
@@ -12,6 +15,8 @@ export class Game {
   lastTime = 0;
   private update: UpdateCallback = () => {};
   private render: RenderCallback = () => {};
+  boids: Boid[] = [];
+  foods: Food[] = [new Food(this, this.randomPosition())];
 
   constructor(
     public width: number,
@@ -22,6 +27,10 @@ export class Game {
     const container = document.getElementById(containerId);
     if (!container) {
       throw new Error("Container not found");
+    }
+
+    for (let i = 0; i < 10; i++) {
+      this.boids.push(new Boid(this, this.randomPosition()));
     }
 
     this.canvas = document.createElement("canvas") as HTMLCanvasElement;
@@ -37,8 +46,21 @@ export class Game {
     this.display = new Display(this.ctx, this);
   }
 
+  randomPosition(): Vector2 {
+    return new Vector2(this.width * Math.random(), this.height * Math.random());
+  }
+
   onUpdate(cb: UpdateCallback) {
     this.update = cb;
+  }
+
+  killFood(food: Food) {
+    this.foods = this.foods.filter((f) => f !== food);
+    this.foods.push(new Food(this, this.randomPosition()));
+  }
+
+  killBoid(boid: Boid) {
+    this.boids = this.boids.filter((b) => b !== boid);
   }
 
   onRender(cb: RenderCallback) {

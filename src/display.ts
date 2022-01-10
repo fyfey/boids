@@ -43,6 +43,18 @@ export class Display {
     this.buffer.restore();
   }
 
+  save() {
+    this.buffer.save();
+  }
+
+  restore() {
+    this.buffer.restore();
+  }
+
+  lineWidth(width: number) {
+    this.buffer.lineWidth = width;
+  }
+
   drawCircle(
     x: number,
     y: number,
