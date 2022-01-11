@@ -7,3 +7,6 @@ export const WANDER_RADIUS = 20;
 export const TWO_PI = Math.PI * 2;
 export const FOOD_RADIUS = 50;
 export const EAT_RATE = 0.2;
+export const FEEDING_DISTANCE = 23;
+export const FADE_RATE = 0.005;
+export const DRAW_FORCES = false;

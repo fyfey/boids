@@ -5,9 +5,13 @@ import { Game } from "./game.js";
 import { Vector2 } from "./vector2.js";
 
 export class Food {
-  food = 500;
+  capacity: number;
+  food: number;
   killed = false;
-  constructor(private game: Game, public pos: Vector2) {}
+  constructor(private game: Game, public pos: Vector2) {
+    this.capacity = Math.random() * 500 + 100;
+    this.food = this.capacity;
+  }
 
   update(dt: number) {}
 
@@ -32,7 +36,7 @@ export class Food {
   }
 
   radius() {
-    return FOOD_RADIUS * (this.food / 500);
+    return FOOD_RADIUS * (this.food / this.capacity);
   }
 
   render(display: Display, dt: number) {

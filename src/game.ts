@@ -10,34 +10,36 @@ export class Game {
   readonly canvas: HTMLCanvasElement;
   readonly ctx: CanvasRenderingContext2D;
   readonly display: Display;
-  drawForces = false;
   running = false;
   lastTime = 0;
   private update: UpdateCallback = () => {};
   private render: RenderCallback = () => {};
   boids: Boid[] = [];
-  foods: Food[] = [new Food(this, this.randomPosition())];
+  foods: Food[] = [];
 
   constructor(
     public width: number,
     public height: number,
-    containerId: string,
+    private container: HTMLElement,
     readonly bgColor = "#fff"
   ) {
-    const container = document.getElementById(containerId);
-    if (!container) {
-      throw new Error("Container not found");
-    }
-
     for (let i = 0; i < 10; i++) {
       this.boids.push(new Boid(this, this.randomPosition()));
+    }
+    for (let i = 0; i < 1; i++) {
+      this.foods.push(new Food(this, this.randomPosition()));
     }
 
     this.canvas = document.createElement("canvas") as HTMLCanvasElement;
     this.canvas.width = width;
     this.canvas.height = height;
 
-    container.appendChild(this.canvas);
+    if (typeof process !== "undefined" && process.env.NODE_ENV === "test") {
+      this.ctx = {} as CanvasRenderingContext2D;
+      this.display = {} as Display;
+      return;
+    }
+
     const ctx = this.canvas.getContext("2d");
     if (!ctx) {
       throw new Error("Failed to get context");
@@ -55,6 +57,10 @@ export class Game {
   }
 
   killFood(food: Food) {
+    if (food.killed) {
+      return;
+    }
+    food.killed = true;
     this.foods = this.foods.filter((f) => f !== food);
     this.foods.push(new Food(this, this.randomPosition()));
   }
@@ -68,6 +74,7 @@ export class Game {
   }
 
   run() {
+    this.container.appendChild(this.canvas);
     this.running = true;
     this._run(0);
   }

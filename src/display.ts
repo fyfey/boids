@@ -1,5 +1,6 @@
 import { TWO_PI } from "./config.js";
 import { Game } from "./game.js";
+import { Rgba } from "./rgba.js";
 
 export class Display {
   private canvas: HTMLCanvasElement;
@@ -24,7 +25,10 @@ export class Display {
   }
 
   clear() {
-    this.buffer.fillStyle = this.game.bgColor;
+    this.buffer.fillStyle = Rgba.fromHex(this.game.bgColor)
+      .withAlpha(1)
+      .toHex();
+    console.log(this.buffer.fillStyle);
     this.buffer.fillRect(0, 0, this.game.width, this.game.height);
   }
 

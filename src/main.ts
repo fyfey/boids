@@ -15,7 +15,8 @@ interface Trigger {
 }
 
 window.onload = async function () {
-  const game = new Game(500, 500, "canvas-container", "#081e6e");
+  const container = document.getElementById("canvas-container");
+  const game = new Game(500, 500, container!, "#081e6e");
 
   let triggers: Trigger[] = [];
 
