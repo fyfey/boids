@@ -6,6 +6,8 @@ import {
   MAX_SPEED,
   WANDER_DISTANCE,
   WANDER_RADIUS,
+  CANVAS_WIDTH,
+  CANVAS_HEIGHT,
 } from "./config.js";
 import { Food } from "./food.js";
 
@@ -16,7 +18,7 @@ interface Trigger {
 
 window.onload = async function () {
   const container = document.getElementById("canvas-container");
-  const game = new Game(500, 500, container!, "#081e6e");
+  const game = new Game(CANVAS_WIDTH, CANVAS_HEIGHT, container!, "#081e6e");
 
   let triggers: Trigger[] = [];
 

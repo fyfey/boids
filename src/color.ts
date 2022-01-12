@@ -1,10 +1,21 @@
-export class Rgba {
+import { hslToRgb, rgbToHsl } from "./colors.js";
+
+export class Color {
+  h: number;
+  s: number;
+  l: number;
+
   constructor(
     public r: number,
     public g: number,
     public b: number,
     public a: number
-  ) {}
+  ) {
+    const [h, s, l] = rgbToHsl(r, g, b);
+    this.h = h;
+    this.s = s;
+    this.l = l;
+  }
 
   static fromHex(hex: string) {
     const r = parseInt(hex.slice(1, 3), 16);
@@ -14,11 +25,16 @@ export class Rgba {
     if (hex.length === 9) {
       a = parseInt(hex.slice(7, 9), 16);
     }
-    return new Rgba(r, g, b, a);
+    return new Color(r, g, b, a);
   }
 
   withAlpha(alpha: number) {
-    return new Rgba(this.r, this.g, this.b, alpha * 255);
+    return new Color(this.r, this.g, this.b, alpha * 255);
+  }
+
+  withHue(hue: number) {
+    const [r, g, b] = hslToRgb(hue, this.s, this.l);
+    return new Color(r, g, b, this.a);
   }
 
   toHex() {
@@ -27,5 +43,9 @@ export class Rgba {
       undefined,
       { maximumFractionDigits: 2 }
     )})`;
+  }
+
+  toHsl() {
+    return `hsla(${this.h}, ${this.s}%, ${this.l}%, ${this.a / 255})`;
   }
 }

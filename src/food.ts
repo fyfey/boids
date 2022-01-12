@@ -1,4 +1,5 @@
 import { Boid } from "./boid.js";
+import { Color } from "./color.js";
 import { EAT_RATE, FOOD_RADIUS, SLOWING_RADIUS } from "./config.js";
 import { Display } from "./display.js";
 import { Game } from "./game.js";
@@ -6,6 +7,7 @@ import { Vector2 } from "./vector2.js";
 
 export class Food {
   capacity: number;
+  color = Color.fromHex("#1691c9").withHue(Math.random() * 200);
   food: number;
   killed = false;
   constructor(private game: Game, public pos: Vector2) {
@@ -17,16 +19,9 @@ export class Food {
 
   feed(boid: Boid) {
     if (this.food > 0) {
-      if (this.food < EAT_RATE) {
-        this.food = 0;
-        boid.food += this.food;
-      } else {
-        this.food -= EAT_RATE;
-        boid.food += EAT_RATE;
-      }
     } else {
-      boid.state = "flee";
-      this.game.boids.forEach((b) => b.seekNewFood());
+      //boid.state = "flee";
+      //this.game.boids.forEach((b) => b.seekNewFood());
       if (this.killed) {
         return;
       }
@@ -46,8 +41,8 @@ export class Food {
       this.pos.x,
       this.pos.y,
       this.radius(),
-      "#2444b5",
-      "#395ddb"
+      this.color.withAlpha(0.7).toHex(),
+      this.color.toHex()
     );
     display.restore();
   }

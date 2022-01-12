@@ -9,7 +9,7 @@ import {
 import { Display } from "./display.js";
 import { Game } from "./game.js";
 import { Food } from "./food.js";
-import { Rgba } from "./rgba.js";
+import { Color } from "./color.js";
 import { StateMachine } from "./state/StateMachine.js";
 import {
   ArriveState,
@@ -18,16 +18,16 @@ import {
   FleeState,
   SeekState,
   WanderState,
-} from "./state/states.js";
+} from "./state/index.js";
 
 export class Boid {
   vel: Vector2 = new Vector2(Math.random() * 2 - 1, Math.random() * 2 - 1);
   radius = 10;
-  state = "wander";
+  //state = "wander";
   nextState = "";
   states = new StateMachine(this.game);
-  color = Rgba.fromHex("#1691c9");
-  offset = 10;
+  color = Color.fromHex("#1691c9").withHue(Math.random() * 200);
+  offset = 2;
   desired = new Vector2();
   steering = new Vector2();
   food = 51 * Math.random() + 50;
@@ -98,11 +98,11 @@ export class Boid {
     this.food -= (dt / 100) * this.vel.length();
   }
 
-  seekNewFood() {
-    if (this.state === "seek" || this.state === "arrive") {
-      this.state = "wander";
-    }
-  }
+  // seekNewFood() {
+  //   if (this.state === "seek" || this.state === "arrive") {
+  //     this.state = "wander";
+  //   }
+  // }
 
   update(ctx: CanvasRenderingContext2D, dt: number, ts: number) {
     this.states.update(this, dt, ts);
@@ -148,7 +148,7 @@ export class Boid {
     // Draw body
     display.save();
     display.lineWidth(3);
-    this.drawStatus(display);
+    //this.drawStatus(display);
     display.drawEllipse(
       this.pos.x,
       this.pos.y,

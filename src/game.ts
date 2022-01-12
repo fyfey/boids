@@ -23,7 +23,7 @@ export class Game {
     private container: HTMLElement,
     readonly bgColor = "#fff"
   ) {
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 5; i++) {
       this.boids.push(new Boid(this, this.randomPosition()));
     }
     for (let i = 0; i < 1; i++) {
@@ -90,7 +90,7 @@ export class Game {
     this.display.clear();
     this.update(dt, ts);
     this.lastTime = ts;
-    this.display.drawText(`FPS: ${fps.toLocaleString()}`, 10, 16, "#fff");
+    //this.display.drawText(`FPS: ${fps.toLocaleString()}`, 10, 16, "#fff");
     this.render(this.display, dt, ts);
     this.display.render();
 
