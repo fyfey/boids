@@ -21,6 +21,6 @@ export class FleeState extends BoidState {
     }
     const vel = boid.flee(this.target);
     vel.add(boid.wander());
-    boid.applyForce(vel);
+    boid.applyForce(vel, dt);
   }
 }

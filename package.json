@@ -1,7 +1,8 @@
 {
   "scripts": {
     "test": "jest",
-    "build:watch": "tsc --watch"
+    "build:watch": "tsc --watch",
+    "build": "tsc"
   },
   "dependencies": {
   },

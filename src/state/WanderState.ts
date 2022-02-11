@@ -1,7 +1,6 @@
 import { Boid } from "../boid.js";
 import { BoidState } from "./states.js";
 import { Vector2 } from "../vector2.js";
-import { FOOD_RADIUS } from "../config.js";
 
 export class WanderState extends BoidState {
   name = "wander";
@@ -17,7 +16,7 @@ export class WanderState extends BoidState {
     if (food.pos.distanceTo(boid.pos) < food.radius() + 50) {
       vel.add(boid.flee(food.pos).multiplyScalar(0.7));
     }
-    boid.applyForce(vel);
+    boid.applyForce(vel, dt);
     boid.burnFood(dt);
 
     if (boid.food < 50) {

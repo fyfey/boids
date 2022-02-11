@@ -1,6 +1,9 @@
+import { BlurCircle } from "./BlurCircle.js";
 import { Boid } from "./boid.js";
+import { Color } from "./color.js";
 import { Display } from "./display.js";
 import { Food } from "./food.js";
+import { PortalManager } from "./PortalManager.js";
 import { Vector2 } from "./vector2.js";
 
 export type RenderCallback = (display: Display, dt: number, t: number) => void;
@@ -16,6 +19,8 @@ export class Game {
   private render: RenderCallback = () => {};
   boids: Boid[] = [];
   foods: Food[] = [];
+  bgCircles: BlurCircle[] = [];
+  portalManager = new PortalManager(this, new Color(0, 213, 255, 255));
 
   constructor(
     public width: number,
@@ -23,16 +28,26 @@ export class Game {
     private container: HTMLElement,
     readonly bgColor = "#fff"
   ) {
-    for (let i = 0; i < 5; i++) {
-      this.boids.push(new Boid(this, this.randomPosition()));
+    for (let i = 0; i < 20; i++) {
+      this.bgCircles.push(new BlurCircle(this));
     }
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < Math.random() * 5 + 1; i++) {
       this.foods.push(new Food(this, this.randomPosition()));
+    }
+    for (let i = 0; i < Math.random() * 50 + 10; i++) {
+      this.boids.push(new Boid(this, this.randomPosition()));
     }
 
     this.canvas = document.createElement("canvas") as HTMLCanvasElement;
     this.canvas.width = width;
     this.canvas.height = height;
+
+    this.canvas.addEventListener("click", (e: MouseEvent) => {
+      this.portalManager.handleClick(
+        e.x + window.scrollX,
+        e.y + window.scrollY
+      );
+    });
 
     if (typeof process !== "undefined" && process.env.NODE_ENV === "test") {
       this.ctx = {} as CanvasRenderingContext2D;
@@ -90,8 +105,9 @@ export class Game {
     this.display.clear();
     this.update(dt, ts);
     this.lastTime = ts;
-    //this.display.drawText(`FPS: ${fps.toLocaleString()}`, 10, 16, "#fff");
+    this.display.drawText(`FPS: ${fps.toLocaleString()}`, 10, 16, "#fff");
     this.render(this.display, dt, ts);
+    this.portalManager.render();
     this.display.render();
 
     requestAnimationFrame(this._run.bind(this));

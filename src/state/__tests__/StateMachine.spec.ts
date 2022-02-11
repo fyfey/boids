@@ -1,6 +1,6 @@
-import { Game } from "../game";
-import { StateMachine } from "./StateMachine";
-import { WanderState } from "./WanderState";
+import { Game } from "../../game";
+import { StateMachine } from "../StateMachine";
+import { WanderState } from "../WanderState";
 
 describe("StateMachine", () => {
   it("adds states", () => {

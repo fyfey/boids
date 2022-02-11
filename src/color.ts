@@ -4,6 +4,7 @@ export class Color {
   h: number;
   s: number;
   l: number;
+  hex = "";
 
   constructor(
     public r: number,
@@ -15,6 +16,11 @@ export class Color {
     this.h = h;
     this.s = s;
     this.l = l;
+    const alpha = this.a > 0 ? this.a / 255 : 0;
+    this.hex = `rgba(${this.r}, ${this.g}, ${this.b}, ${alpha.toLocaleString(
+      undefined,
+      { maximumFractionDigits: 2 }
+    )})`;
   }
 
   static fromHex(hex: string) {
@@ -26,6 +32,14 @@ export class Color {
       a = parseInt(hex.slice(7, 9), 16);
     }
     return new Color(r, g, b, a);
+  }
+
+  static randomPastel() {
+    const hue = Math.random() * 360;
+    const saturation = 100;
+    const lightness = 50;
+    const [r, g, b] = hslToRgb(hue, saturation, lightness);
+    return new Color(r, g, b, 255);
   }
 
   withAlpha(alpha: number) {
@@ -46,6 +60,6 @@ export class Color {
   }
 
   toHsl() {
-    return `hsla(${this.h}, ${this.s}%, ${this.l}%, ${this.a / 255})`;
+    return this.hex;
   }
 }

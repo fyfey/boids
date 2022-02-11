@@ -5,6 +5,7 @@ import {
   WANDER_DISTANCE,
   WANDER_RADIUS,
   DRAW_FORCES,
+  MAX_FORCE,
 } from "./config.js";
 import { Display } from "./display.js";
 import { Game } from "./game.js";
@@ -26,7 +27,7 @@ export class Boid {
   //state = "wander";
   nextState = "";
   states = new StateMachine(this.game);
-  color = Color.fromHex("#1691c9").withHue(Math.random() * 200);
+  color = Color.randomPastel();
   offset = 2;
   desired = new Vector2();
   steering = new Vector2();
@@ -95,7 +96,7 @@ export class Boid {
   }
 
   burnFood(dt: number) {
-    this.food -= (dt / 100) * this.vel.length();
+    this.food -= (this.vel.length() * dt) / 200;
   }
 
   // seekNewFood() {
@@ -123,11 +124,13 @@ export class Boid {
     }
   }
 
-  applyForce(desiredVelocity: Vector2) {
-    this.steering = desiredVelocity.sub(this.vel);
-    const acceleration = this.steering.clone().divideScalar(MASS);
-    this.vel.add(acceleration);
-    this.pos.add(this.vel);
+  applyForce(desiredVelocity: Vector2, dt: number) {
+    this.steering = desiredVelocity
+      .sub(this.vel)
+      .truncate(MAX_FORCE)
+      .divideScalar(MASS);
+    this.vel.add(this.steering).truncate(MAX_SPEED);
+    this.pos.add(this.vel.multiplyScalar(dt / 10));
   }
 
   findNearestFood(food: Food[]): Food {
@@ -148,7 +151,7 @@ export class Boid {
     // Draw body
     display.save();
     display.lineWidth(3);
-    //this.drawStatus(display);
+    this.drawStatus(display);
     display.drawEllipse(
       this.pos.x,
       this.pos.y,
@@ -166,7 +169,8 @@ export class Boid {
     startPoint.add(direction);
     const newPoint = startPoint.clone();
     newPoint.add(direction);
-    display.lineWidth(2);
+    display.lineWidth(4);
+    display.lineCap("round");
     display.drawLine(
       startPoint.x,
       startPoint.y,

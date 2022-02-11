@@ -1,7 +1,7 @@
-export const CANVAS_WIDTH = 500;
+export const CANVAS_WIDTH = 1000;
 export const CANVAS_HEIGHT = 500;
 export const SLOWING_RADIUS = 75.0;
-export const MAX_SPEED = 0.5;
+export const MAX_SPEED = 1;
 export const MAX_FORCE = 5;
 export const MASS = 30;
 export const WANDER_DISTANCE = 70;

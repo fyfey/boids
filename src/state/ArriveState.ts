@@ -28,7 +28,8 @@ export class ArriveState extends BoidState {
       desiredVelocity
         .setLength(MAX_SPEED)
         .multiplyScalar(distance / SLOWING_RADIUS)
-        .maxScalar(0.4)
+        .maxScalar(0.4),
+      dt
     );
   }
 }

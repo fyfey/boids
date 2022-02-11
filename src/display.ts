@@ -24,11 +24,18 @@ export class Display {
     this.buffer.setLineDash([]);
   }
 
+  lineCap(cap: CanvasLineCap) {
+    this.buffer.lineCap = cap;
+  }
+
+  filter(filter: string) {
+    this.buffer.filter = filter;
+  }
+
   clear() {
     this.buffer.fillStyle = Color.fromHex(this.game.bgColor)
       .withAlpha(1)
       .toHex();
-    console.log(this.buffer.fillStyle);
     this.buffer.fillRect(0, 0, this.game.width, this.game.height);
   }
 

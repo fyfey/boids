@@ -18,7 +18,7 @@ interface Trigger {
 
 window.onload = async function () {
   const container = document.getElementById("canvas-container");
-  const game = new Game(CANVAS_WIDTH, CANVAS_HEIGHT, container!, "#081e6e");
+  const game = new Game(CANVAS_WIDTH, CANVAS_HEIGHT, container!, "#000000");
 
   let triggers: Trigger[] = [];
 
@@ -34,6 +34,9 @@ window.onload = async function () {
     }
   });
   game.onRender((display, dt, fps) => {
+    for (let i = 0; i < game.bgCircles.length; i++) {
+      game.bgCircles[i].render(display);
+    }
     for (let i = 0; i < game.foods.length; i++) {
       game.foods[i].render(display, dt);
     }

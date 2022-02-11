@@ -25,7 +25,7 @@ export class SeekState extends BoidState {
       .forEach((neighbour) =>
         vel.add(boid.flee(neighbour.boid.pos).multiplyScalar(0.2))
       );
-    boid.applyForce(vel);
+    boid.applyForce(vel, dt);
     boid.burnFood(dt);
   }
 }
