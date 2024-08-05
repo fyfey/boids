@@ -6,7 +6,10 @@ export class Display {
   private canvas: HTMLCanvasElement;
   private buffer: CanvasRenderingContext2D;
 
-  constructor(private context: CanvasRenderingContext2D, private game: Game) {
+  constructor(
+    private context: CanvasRenderingContext2D,
+    private game: Game,
+  ) {
     this.canvas = document.createElement("canvas");
     this.canvas.width = this.game.width;
     this.canvas.height = this.game.height;
@@ -71,7 +74,7 @@ export class Display {
     y: number,
     radius: number,
     fillStyle: string | null,
-    strokeStyle: string | null
+    strokeStyle: string | null,
   ) {
     this.buffer.save();
     if (fillStyle) {
@@ -98,7 +101,7 @@ export class Display {
     radiusY: number,
     rotation: number,
     fillStyle: string | null,
-    strokeStyle: string | null
+    strokeStyle: string | null,
   ) {
     this.buffer.save();
     if (fillStyle) {

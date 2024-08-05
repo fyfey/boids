@@ -10,7 +10,7 @@ export class Color {
     public r: number,
     public g: number,
     public b: number,
-    public a: number
+    public a: number,
   ) {
     const [h, s, l] = rgbToHsl(r, g, b);
     this.h = h;
@@ -19,7 +19,7 @@ export class Color {
     const alpha = this.a > 0 ? this.a / 255 : 0;
     this.hex = `rgba(${this.r}, ${this.g}, ${this.b}, ${alpha.toLocaleString(
       undefined,
-      { maximumFractionDigits: 2 }
+      { maximumFractionDigits: 2 },
     )})`;
   }
 
@@ -55,7 +55,7 @@ export class Color {
     const alpha = this.a > 0 ? this.a / 255 : 0;
     return `rgba(${this.r}, ${this.g}, ${this.b}, ${alpha.toLocaleString(
       undefined,
-      { maximumFractionDigits: 2 }
+      { maximumFractionDigits: 2 },
     )})`;
   }
 

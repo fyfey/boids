@@ -1,6 +1,7 @@
 import { BlurCircle } from "./BlurCircle.js";
 import { Boid } from "./boid.js";
 import { Color } from "./color.js";
+import { BOID_COUNT } from "./config.js";
 import { Display } from "./display.js";
 import { Food } from "./food.js";
 import { PortalManager } from "./PortalManager.js";
@@ -26,7 +27,7 @@ export class Game {
     public width: number,
     public height: number,
     private container: HTMLElement,
-    readonly bgColor = "#fff"
+    readonly bgColor = "#fff",
   ) {
     for (let i = 0; i < 20; i++) {
       this.bgCircles.push(new BlurCircle(this));
@@ -34,7 +35,7 @@ export class Game {
     for (let i = 0; i < Math.random() * 5 + 1; i++) {
       this.foods.push(new Food(this, this.randomPosition()));
     }
-    for (let i = 0; i < Math.random() * 50 + 10; i++) {
+    for (let i = 0; i < BOID_COUNT; i++) {
       this.boids.push(new Boid(this, this.randomPosition()));
     }
 
@@ -45,7 +46,7 @@ export class Game {
     this.canvas.addEventListener("click", (e: MouseEvent) => {
       this.portalManager.handleClick(
         e.x + window.scrollX,
-        e.y + window.scrollY
+        e.y + window.scrollY,
       );
     });
 
@@ -105,7 +106,7 @@ export class Game {
     this.display.clear();
     this.update(dt, ts);
     this.lastTime = ts;
-    this.display.drawText(`FPS: ${fps.toLocaleString()}`, 10, 16, "#fff");
+    // this.display.drawText(`FPS: ${fps.toLocaleString()}`, 10, 16, "#fff");
     this.render(this.display, dt, ts);
     this.portalManager.render();
     this.display.render();

@@ -9,22 +9,22 @@ export class BlurCircle {
   color: Color;
   radius = Math.random() * 50 + 50;
 
-  constructor(private game: Game) {
+  constructor(game: Game) {
     const [x, y] = game.randomPosition().toArray();
     this.color = Color.randomPastel().withAlpha(Math.random() * 0.5);
     this.position = new Vector2(x, y);
   }
 
   render(display: Display) {
-    this.game.display.save();
-    this.game.display.filter(`blur(${this.blur}px)`);
-    this.game.display.drawCircle(
+    display.save();
+    display.filter(`blur(${this.blur}px)`);
+    display.drawCircle(
       this.position.x,
       this.position.y,
       this.radius,
       this.color.toHex(),
-      this.color.toHex()
+      this.color.toHex(),
     );
-    this.game.display.restore();
+    display.restore();
   }
 }

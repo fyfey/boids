@@ -6,6 +6,7 @@ import {
   WANDER_RADIUS,
   DRAW_FORCES,
   MAX_FORCE,
+  BURN_RATE,
 } from "./config.js";
 import { Display } from "./display.js";
 import { Game } from "./game.js";
@@ -41,7 +42,10 @@ export class Boid {
   // target = new Vector2();
   // foodTarget: Food | null = null;
 
-  constructor(public game: Game, public pos: Vector2) {
+  constructor(
+    public game: Game,
+    public pos: Vector2,
+  ) {
     this.states
       .add(WanderState)
       .add(SeekState)
@@ -96,7 +100,7 @@ export class Boid {
   }
 
   burnFood(dt: number) {
-    this.food -= (this.vel.length() * dt) / 200;
+    this.food -= this.vel.length() * dt * BURN_RATE;
   }
 
   // seekNewFood() {
@@ -151,7 +155,7 @@ export class Boid {
     // Draw body
     display.save();
     display.lineWidth(3);
-    this.drawStatus(display);
+    // this.drawStatus(display);
     display.drawEllipse(
       this.pos.x,
       this.pos.y,
@@ -159,7 +163,7 @@ export class Boid {
       Math.max(1, this.radius * (this.food / 100)),
       this.vel.angle(),
       this.color.withAlpha(this.alpha).toHex(),
-      this.color.withAlpha(this.alpha + 0.1).toHex()
+      this.color.withAlpha(this.alpha + 0.1).toHex(),
     );
 
     const angle = this.vel.angle();
@@ -176,7 +180,7 @@ export class Boid {
       startPoint.y,
       newPoint.x,
       newPoint.y,
-      this.color.withAlpha(this.alpha).toHex()
+      this.color.withAlpha(this.alpha).toHex(),
     );
     display.restore();
     this.drawForces();
@@ -191,14 +195,14 @@ export class Boid {
       this.wanderPoint.y,
       WANDER_RADIUS,
       "transparent",
-      "#0f0"
+      "#0f0",
     );
     this.game.display.drawLine(
       this.pos.x,
       this.pos.y,
       this.wanderPoint.x,
       this.wanderPoint.y,
-      "#00ff00"
+      "#00ff00",
     );
 
     this.game.display.drawCircle(
@@ -206,14 +210,14 @@ export class Boid {
       this.wanderTarget.y,
       this.offset,
       "transparent",
-      "#0f0"
+      "#0f0",
     );
     this.game.display.drawLine(
       this.pos.x,
       this.pos.y,
       this.wanderTarget.x,
       this.wanderTarget.y,
-      "#00ff00"
+      "#00ff00",
     );
   }
   drawStatus(display: Display) {
@@ -225,7 +229,7 @@ export class Boid {
       })}`,
       10,
       36,
-      "#fff"
+      "#fff",
     );
     display.drawText(
       `Speed: ${this.vel.length().toLocaleString(undefined, {
@@ -234,7 +238,7 @@ export class Boid {
       })}`,
       10,
       46,
-      "#fff"
+      "#fff",
     );
   }
 }

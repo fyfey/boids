@@ -8,7 +8,10 @@ export class PortalManager {
   private end?: Portal;
   private next: "start" | "end" = "start";
 
-  constructor(private game: Game, private color: Color) {}
+  constructor(
+    private game: Game,
+    private color: Color,
+  ) {}
 
   handleClick(x: number, y: number) {
     switch (this.next) {
