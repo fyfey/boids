@@ -10,6 +10,8 @@ An attempt to reproduce "Hungry AI" which I found on Bit-101 years ago. Hungry A
 - As the boids eat the food, they food source must deplete (the boid must stick to the outside edge of the food as it shrinks)
 - Once the food source is depleted, a new food source must be added
 
+Demo: [https://boids.fyfe.io](https://boids.fyfe.io)
+
 ## Running locally
 
 ```
