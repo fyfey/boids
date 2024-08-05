@@ -1,5 +1,7 @@
 # Boids
 
+![boids screenshot](docs/screenshot.png)
+
 An attempt to reproduce "Hungry AI" which I found on Bit-101 years ago. Hungry AI was a flash simulation written in AS3 but has since been lost.
 
 - The boids have a certain amount of "food" which goes down each time they move
