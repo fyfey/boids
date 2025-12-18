@@ -50,6 +50,14 @@ window.onload = async function () {
     setTimeout(resizeCanvas, 100);
   });
 
+  // Add reload button functionality
+  const reloadBtn = document.getElementById("reload-btn");
+  if (reloadBtn) {
+    reloadBtn.addEventListener("click", () => {
+      window.location.reload();
+    });
+  }
+
   let triggers: Trigger[] = [];
 
   game.onUpdate((dt: number, ts: number) => {

@@ -7,10 +7,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="./styles.css">
     <title>Boids by Stuart Fyfe</title>
+    <style>
+      canvas {
+        display: block;
+        touch-action: none;
+      }
+      
+      #reload-btn {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        width: 48px;
+        height: 48px;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        transition: all 0.2s ease;
+        z-index: 1000;
+        color: #333;
+      }
+      
+      #reload-btn:hover {
+        background: rgba(255, 255, 255, 1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        transform: scale(1.05);
+      }
+      
+      #reload-btn:active {
+        transform: scale(0.95);
+      }
+    </style>
 </head>
 
 <body>
     <div id="app"></div>
+    <button id="reload-btn" aria-label="Reload">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+        </svg>
+    </button>
     <script type="module" src="./lib/main.js"></script>
 </body>
 
