@@ -8,16 +8,21 @@ export class BlurCircle {
   blur = Math.random() * 10 + 10;
   color: Color;
   radius = Math.random() * 50 + 50;
+  private isMobile: boolean;
 
   constructor(game: Game) {
     const [x, y] = game.randomPosition().toArray();
     this.color = Color.randomPastel().withAlpha(Math.random() * 0.5);
     this.position = new Vector2(x, y);
+    this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   }
 
   render(display: Display) {
     display.save();
-    display.filter(`blur(${this.blur}px)`);
+    // Skip blur on mobile devices - it's very expensive
+    if (!this.isMobile) {
+      display.filter(`blur(${this.blur}px)`);
+    }
     display.drawCircle(
       this.position.x,
       this.position.y,

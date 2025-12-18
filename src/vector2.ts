@@ -382,3 +382,29 @@ export class Vector2 {
     yield this.y;
   }
 }
+
+// Vector2 object pool for temporary vectors
+class Vector2Pool {
+  private pool: Vector2[] = [];
+  private maxSize = 100;
+
+  get(): Vector2 {
+    return this.pool.pop() || new Vector2(0, 0);
+  }
+
+  release(v: Vector2) {
+    if (this.pool.length < this.maxSize) {
+      v.x = 0;
+      v.y = 0;
+      this.pool.push(v);
+    }
+  }
+
+  releaseAll(vectors: Vector2[]) {
+    for (const v of vectors) {
+      this.release(v);
+    }
+  }
+}
+
+export const vectorPool = new Vector2Pool();

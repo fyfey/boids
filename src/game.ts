@@ -1,7 +1,7 @@
+import { BOID_COUNT } from "./config.js";
 import { BlurCircle } from "./BlurCircle.js";
 import { Boid } from "./boid.js";
 import { Color } from "./color.js";
-import { BOID_COUNT } from "./config.js";
 import { Display } from "./display.js";
 import { Food } from "./food.js";
 import { PortalManager } from "./PortalManager.js";
@@ -16,6 +16,8 @@ export class Game {
   readonly display: Display;
   running = false;
   lastTime = 0;
+  private targetFPS = 60;
+  private frameInterval = 1000 / this.targetFPS;
   private update: UpdateCallback = () => {};
   private render: RenderCallback = () => {};
   boids: Boid[] = [];
@@ -29,13 +31,18 @@ export class Game {
     private container: HTMLElement,
     readonly bgColor = "#fff",
   ) {
-    for (let i = 0; i < 20; i++) {
+    // Detect mobile and reduce particle count
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const bgCircleCount = isMobile ? 5 : 20;
+    const boidCount = isMobile ? Math.floor(BOID_COUNT / 2) : BOID_COUNT;
+    
+    for (let i = 0; i < bgCircleCount; i++) {
       this.bgCircles.push(new BlurCircle(this));
     }
     for (let i = 0; i < Math.random() * 5 + 1; i++) {
       this.foods.push(new Food(this, this.randomPosition()));
     }
-    for (let i = 0; i < BOID_COUNT; i++) {
+    for (let i = 0; i < boidCount; i++) {
       this.boids.push(new Boid(this, this.randomPosition()));
     }
 
@@ -101,6 +108,13 @@ export class Game {
       this.lastTime = ts;
     }
     let dt = ts - this.lastTime;
+    
+    // Skip frame if we're behind
+    if (dt < this.frameInterval - 1) {
+      requestAnimationFrame(this._run.bind(this));
+      return;
+    }
+    
     let fps = 1000 / dt;
 
     this.display.clear();

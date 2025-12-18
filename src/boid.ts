@@ -1,18 +1,3 @@
-import { Vector2 } from "./vector2.js";
-import {
-  MAX_SPEED,
-  MASS,
-  WANDER_DISTANCE,
-  WANDER_RADIUS,
-  DRAW_FORCES,
-  MAX_FORCE,
-  BURN_RATE,
-} from "./config.js";
-import { Display } from "./display.js";
-import { Game } from "./game.js";
-import { Food } from "./food.js";
-import { Color } from "./color.js";
-import { StateMachine } from "./state/StateMachine.js";
 import {
   ArriveState,
   DeadState,
@@ -21,11 +6,26 @@ import {
   SeekState,
   WanderState,
 } from "./state/index.js";
+import {
+  BURN_RATE,
+  DRAW_FORCES,
+  MASS,
+  MAX_FORCE,
+  MAX_SPEED,
+  WANDER_DISTANCE,
+  WANDER_RADIUS,
+} from "./config.js";
+import { Vector2, vectorPool } from "./vector2.js";
+
+import { Color } from "./color.js";
+import { Display } from "./display.js";
+import { Food } from "./food.js";
+import { Game } from "./game.js";
+import { StateMachine } from "./state/StateMachine.js";
 
 export class Boid {
   vel: Vector2 = new Vector2(Math.random() * 2 - 1, Math.random() * 2 - 1);
   radius = 10;
-  //state = "wander";
   nextState = "";
   states = new StateMachine(this.game);
   color = Color.randomPastel();
@@ -33,14 +33,13 @@ export class Boid {
   desired = new Vector2();
   steering = new Vector2();
   food = 51 * Math.random() + 50;
-  // fleeTimeout = 0;
   wanderTarget = new Vector2();
   wanderPoint = new Vector2();
   alpha = 0.8;
-  // feedingPosition = new Vector2();
-  // fleeing = false;
-  // target = new Vector2();
-  // foodTarget: Food | null = null;
+  private baseColor: Color;
+  private lightColor: Color;
+  private darkColor: Color;
+  private noseColor: Color;
 
   constructor(
     public game: Game,
@@ -54,6 +53,10 @@ export class Boid {
       .add(FleeState)
       .add(DeadState)
       .start("wander");
+    this.baseColor = Color.randomPastel();
+    this.lightColor = this.baseColor.withAlpha(0.8);
+    this.darkColor = this.baseColor.withAlpha(1);
+    this.noseColor = this.baseColor.withAlpha(0.8);
   }
 
   getNeighbors(boids: Boid[]) {
@@ -103,12 +106,6 @@ export class Boid {
     this.food -= this.vel.length() * dt * BURN_RATE;
   }
 
-  // seekNewFood() {
-  //   if (this.state === "seek" || this.state === "arrive") {
-  //     this.state = "wander";
-  //   }
-  // }
-
   update(ctx: CanvasRenderingContext2D, dt: number, ts: number) {
     this.states.update(this, dt, ts);
     if (this.food <= 0) {
@@ -152,18 +149,23 @@ export class Boid {
   }
 
   render(display: Display, dt: number) {
-    // Draw body
+    // Update cached colors if alpha has changed (e.g., during death fade)
+    if (this.alpha !== 0.8) {
+      this.lightColor = this.baseColor.withAlpha(this.alpha * 0.8);
+      this.darkColor = this.baseColor.withAlpha(this.alpha);
+      this.noseColor = this.baseColor.withAlpha(this.alpha);
+    }
+
     display.save();
     display.lineWidth(3);
-    // this.drawStatus(display);
     display.drawEllipse(
       this.pos.x,
       this.pos.y,
       this.radius,
       Math.max(1, this.radius * (this.food / 100)),
       this.vel.angle(),
-      this.color.withAlpha(this.alpha).toHex(),
-      this.color.withAlpha(this.alpha + 0.1).toHex(),
+      this.lightColor.toHex(),
+      this.darkColor.toHex(),
     );
 
     const angle = this.vel.angle();
@@ -180,7 +182,7 @@ export class Boid {
       startPoint.y,
       newPoint.x,
       newPoint.y,
-      this.color.withAlpha(this.alpha).toHex(),
+      this.noseColor.toHex(),
     );
     display.restore();
     this.drawForces();
