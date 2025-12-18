@@ -29,7 +29,7 @@ export class Game {
     public width: number,
     public height: number,
     private container: HTMLElement,
-    readonly bgColor = "#fff",
+    readonly bgColor = "#000000",
   ) {
     // Detect mobile and reduce particle count
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);

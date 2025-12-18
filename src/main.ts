@@ -1,15 +1,18 @@
+// import "./style.css";
+
+// import {
+//   CANVAS_HEIGHT,
+//   CANVAS_WIDTH,
+//   MAX_SPEED,
+//   SLOWING_RADIUS,
+//   WANDER_DISTANCE,
+//   WANDER_RADIUS,
+// } from "./config.js";
+//
+// import { Boid } from "./boid.js";
+// import { Food } from "./food.js";
 import { Game } from "./game.js";
-import { Boid } from "./boid.js";
-import { Vector2 } from "./vector2.js";
-import {
-  SLOWING_RADIUS,
-  MAX_SPEED,
-  WANDER_DISTANCE,
-  WANDER_RADIUS,
-  CANVAS_WIDTH,
-  CANVAS_HEIGHT,
-} from "./config.js";
-import { Food } from "./food.js";
+// import { Vector2 } from "./vector2.js";
 
 interface Trigger {
   time: number;
@@ -17,8 +20,27 @@ interface Trigger {
 }
 
 window.onload = async function () {
-  const container = document.getElementById("canvas-container");
-  const game = new Game(CANVAS_WIDTH, CANVAS_HEIGHT, container!, "#000000");
+  const app = document.getElementById("app");
+  if (!app) {
+    throw new Error("No app element found");
+  }
+
+  // Use window dimensions for mobile
+  const game = new Game(window.innerWidth, window.innerHeight, app, "#000000");
+
+  // Handle window resize and orientation changes
+  function resizeCanvas() {
+    game.canvas.width = window.innerWidth;
+    game.canvas.height = window.innerHeight;
+    game.width = window.innerWidth;
+    game.height = window.innerHeight;
+  }
+
+  window.addEventListener("resize", resizeCanvas);
+  window.addEventListener("orientationchange", () => {
+    // Small delay to ensure orientation change is complete
+    setTimeout(resizeCanvas, 100);
+  });
 
   let triggers: Trigger[] = [];
 
