@@ -3,70 +3,64 @@ import { Game } from "./game.js";
 import { Color } from "./color.js";
 
 export class Display {
-  private canvas: HTMLCanvasElement;
-  private buffer: CanvasRenderingContext2D;
+  public width: number;
+  public height: number;
 
   constructor(
-    private context: CanvasRenderingContext2D,
-    private game: Game,
+    public ctx: CanvasRenderingContext2D,
+    public game: Game,
   ) {
-    this.canvas = document.createElement("canvas");
-    this.canvas.width = this.game.width;
-    this.canvas.height = this.game.height;
-    const ctx = this.canvas.getContext("2d");
-    if (!ctx) {
-      throw new Error("Failed to get context");
-    }
-    this.buffer = ctx;
+    this.width = game.width;
+    this.height = game.height;
   }
 
   setDashedStorke() {
-    this.buffer.setLineDash([2, 10]);
+    this.ctx.setLineDash([2, 10]);
   }
   setSolidStroke() {
-    this.buffer.setLineDash([]);
+    this.ctx.setLineDash([]);
   }
 
   lineCap(cap: CanvasLineCap) {
-    this.buffer.lineCap = cap;
+    this.ctx.lineCap = cap;
   }
 
   filter(filter: string) {
-    this.buffer.filter = filter;
+    this.ctx.filter = filter;
   }
 
   clear() {
-    this.buffer.fillStyle = Color.fromHex(this.game.bgColor)
+    this.ctx.fillStyle = Color.fromHex(this.game.bgColor)
       .withAlpha(1)
       .toHex();
-    this.buffer.fillRect(0, 0, this.game.width, this.game.height);
+    this.ctx.fillRect(0, 0, this.game.width, this.game.height);
   }
 
   drawText(text: string, x: number, y: number, color: string) {
-    this.buffer.fillStyle = color;
-    this.buffer.fillText(text, x, y);
+    this.ctx.fillStyle = color;
+    this.ctx.fillText(text, x, y);
   }
 
   drawLine(x1: number, y1: number, x2: number, y2: number, color: string) {
-    this.buffer.save();
-    this.buffer.strokeStyle = color;
-    this.buffer.beginPath();
-    this.buffer.moveTo(x1, y1);
-    this.buffer.lineTo(x2, y2);
-    this.buffer.stroke();
-    this.buffer.restore();
+    this.ctx.save();
+    this.ctx.strokeStyle = color;
+    this.ctx.beginPath();
+    this.ctx.moveTo(x1, y1);
+    this.ctx.lineTo(x2, y2);
+    this.ctx.stroke();
+    this.ctx.restore();
   }
 
   save() {
-    this.buffer.save();
+    this.ctx.save();
   }
 
   restore() {
-    this.buffer.restore();
+    this.ctx.restore();
   }
 
   lineWidth(width: number) {
-    this.buffer.lineWidth = width;
+    this.ctx.lineWidth = width;
   }
 
   drawCircle(
@@ -76,22 +70,22 @@ export class Display {
     fillStyle: string | null,
     strokeStyle: string | null,
   ) {
-    this.buffer.save();
+    this.ctx.save();
     if (fillStyle) {
-      this.buffer.fillStyle = fillStyle;
+      this.ctx.fillStyle = fillStyle;
     }
     if (strokeStyle) {
-      this.buffer.strokeStyle = strokeStyle;
+      this.ctx.strokeStyle = strokeStyle;
     }
-    this.buffer.beginPath();
-    this.buffer.arc(x, y, radius, 0, TWO_PI);
+    this.ctx.beginPath();
+    this.ctx.arc(x, y, radius, 0, TWO_PI);
     if (strokeStyle) {
-      this.buffer.stroke();
+      this.ctx.stroke();
     }
     if (fillStyle) {
-      this.buffer.fill();
+      this.ctx.fill();
     }
-    this.buffer.restore();
+    this.ctx.restore();
   }
 
   drawEllipse(
@@ -103,25 +97,25 @@ export class Display {
     fillStyle: string | null,
     strokeStyle: string | null,
   ) {
-    this.buffer.save();
+    this.ctx.save();
     if (fillStyle) {
-      this.buffer.fillStyle = fillStyle;
+      this.ctx.fillStyle = fillStyle;
     }
     if (strokeStyle) {
-      this.buffer.strokeStyle = strokeStyle;
+      this.ctx.strokeStyle = strokeStyle;
     }
-    this.buffer.beginPath();
-    this.buffer.ellipse(x, y, radiusX, radiusY, rotation, 0, TWO_PI);
+    this.ctx.beginPath();
+    this.ctx.ellipse(x, y, radiusX, radiusY, rotation, 0, TWO_PI);
     if (strokeStyle) {
-      this.buffer.stroke();
+      this.ctx.stroke();
     }
     if (fillStyle) {
-      this.buffer.fill();
+      this.ctx.fill();
     }
-    this.buffer.restore();
+    this.ctx.restore();
   }
 
   render() {
-    this.context.drawImage(this.canvas, 0, 0);
+    // No longer needed - drawing directly to canvas
   }
 }

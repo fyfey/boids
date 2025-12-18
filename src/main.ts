@@ -34,11 +34,19 @@ window.onload = async function () {
     game.canvas.height = window.innerHeight;
     game.width = window.innerWidth;
     game.height = window.innerHeight;
+    game.display.width = window.innerWidth;
+    game.display.height = window.innerHeight;
   }
 
   window.addEventListener("resize", resizeCanvas);
   window.addEventListener("orientationchange", () => {
     // Small delay to ensure orientation change is complete
+    setTimeout(resizeCanvas, 100);
+  });
+
+  // Also listen for screen rotation via matchMedia
+  const portrait = window.matchMedia("(orientation: portrait)");
+  portrait.addEventListener("change", () => {
     setTimeout(resizeCanvas, 100);
   });
 
